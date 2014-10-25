@@ -1,0 +1,40 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+div.container-fluid {
+  height: 100%;
+}
+
+div.row1 {
+  height: 80%;
+}
+
+div.sun {
+  top: 0;
+  right: 0;
+  position: absolute;
+  width: 20%;
+  height: 20%;
+}
+div.sun > img {
+  -ms-transform: translate(20%, -20%);
+  -webkit-transform: translate(20%, -20%);
+  transform: translate(20%, -20%);
+}
+
+div.row2 {
+  height: 20%;
+}
+
+button {
+  margin: 0 1% 0 1%;
+}
+
+@media (min-width: 768px) { 
+}
+@media (min-width: 992px) {
+}
+@media (min-width: 1200px) { 
+}
