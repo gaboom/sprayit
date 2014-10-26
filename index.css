@@ -1,10 +1,20 @@
 html, body {
   height: 100%;
   overflow: hidden;
+  min-width: 300px;
+  min-height: 256px;
 }
 
 div.container-fluid {
   height: 100%;
+}
+
+div.loading {
+  display: table-cell;
+  vertical-align: middle;
+}
+div.loading > img {
+  margin-top: -10%;
 }
 
 div.row1 {
