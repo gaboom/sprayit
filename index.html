@@ -17,27 +17,22 @@
     <![endif]-->
   </head>
   <body ng-controller="SprayController">
-    <div class="container-fluid" ng-show="loading">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="loading">
-            <img class="img-responsive" alt="loading" src="img/shark.gif"/>
-          </div>
-        </div>
-      </div>
+    <div class="fullscreen-loading" ng-hide="loaded">
+      <img id="loading" class="img-responsive" alt="loading" src="img/shark.gif"/>
     </div>
 
-    <div class="container-fluid ng-cloak" ng-hide="loading">
+    <div class="container-fluid ng-cloak" ng-show="loaded">
       <div class="row row1">
-        <div class="col-xs-12">
+        <div id="content" class="ccol-xs-12">
           <div class="sun">
             <img class="img-responsive" alt="sun" src="img/sun.png"/>
           </div>
-          <img class="img-responsive" alt="train" src="img/train.svg" style="margin-top: 8%"/>
+          <img id="train" class="hidden img-responsive" alt="train" src="img/train.svg" style="margin-top: 8%"/>
+          <canvas id="canvas"></canvas>
         </div>
       </div>
       <div class="row row2">
-        <div class="col-xs-12">
+        <div id="control" class="col-xs-12">
           <button type="button" class="btn btn-default pull-left">Black</button>
           <button type="button" class="btn btn-default pull-left">White</button>
           <button type="button" class="btn btn-default pull-right" ng-click="reset()">New</button>
