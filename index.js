@@ -2,7 +2,7 @@ var app = angular.module("sprayit", []);
 
 app.controller("SprayController", function($scope, $timeout) {
   $timeout(function(){
-    //$scope.reset();
+    $scope.reset();
   });
 });
 
@@ -27,9 +27,7 @@ app.directive("sprayInit", function($timeout) {
         }
         reset = setTimeout(function() {
           reset = null;
-          $timeout(function() {
-            $scope.init();
-          });
+          $scope.init();
         }, 500);
       };
       $(window).resize($scope.reset);
@@ -37,7 +35,7 @@ app.directive("sprayInit", function($timeout) {
   };
 });
 
-app.directive("sprayCanvas", function() {
+app.directive("sprayCanvas", function($timeout) {
   return {
     scope: false,
     restrict: 'A',
@@ -49,10 +47,22 @@ app.directive("sprayCanvas", function() {
         $scope.height = window.innerHeight * 0.8; // row2 height
         context.canvas.width = $scope.width;
         context.canvas.height = $scope.height;
-        context.strokeStyle = 'blue';
-        context.lineWidth = '5';
-        context.strokeRect(0, 0, $scope.width, $scope.height);
-        $scope.loaded = true;
+        context.clearRect(0, 0, $scope.width, $scope.height);
+        var train = new Image();
+        train.onload = function() {
+          var ratio = train.naturalHeight / train.naturalWidth;
+          var width = $scope.width;
+          var height = $scope.width * ratio;
+          if (height > $scope.height) {
+            width = $scope.height / ratio;
+            height = $scope.height;
+          }
+          context.drawImage(train, ($scope.width-width)/2, ($scope.height-height)/2, width, height);
+          $timeout(function(){
+            $scope.loaded = true;
+          });
+        };
+        train.src = 'img/train.svg';
       };
     }
   };
