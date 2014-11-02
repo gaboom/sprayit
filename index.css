@@ -34,8 +34,8 @@ div.sun {
   top: 0;
   right: 0;
   position: absolute;
-  width: 20%;
-  height: 20%;
+  width: 10%;
+  height: 10%;
 }
 div.sun > img {
   -ms-transform: translate(20%, -20%);
