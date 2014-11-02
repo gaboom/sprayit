@@ -5,19 +5,25 @@ html, body {
   min-height: 256px;
 }
 
-div.container-fluid {
-  height: 100%;
-}
-
 div.fullscreen-loading {
   width: 100%;
   height: 100%;
-  display: inline-block;
-  vertical-align: middle;
   text-align: center;
+  white-space: nowrap;
+}
+div.fullscreen-loading>span.helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 img#loading {
+  display: inline-block;
   margin-top: -2%;
+  vertical-align: middle;
+}
+
+div.container-fluid {
+  height: 100%;
 }
 
 div.row1 {

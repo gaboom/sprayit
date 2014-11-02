@@ -16,19 +16,20 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body ng-controller="SprayController">
+  <body ng-controller="SprayController" spray-init>
     <div class="fullscreen-loading" ng-hide="loaded">
+      <span class="helper"></span>
       <img id="loading" class="img-responsive" alt="loading" src="img/shark.gif"/>
     </div>
 
     <div class="container-fluid ng-cloak" ng-show="loaded">
       <div class="row row1">
-        <div id="content" class="ccol-xs-12">
+        <div id="content" class="col-xs-12">
           <div class="sun">
             <img class="img-responsive" alt="sun" src="img/sun.png"/>
           </div>
           <img id="train" class="hidden img-responsive" alt="train" src="img/train.svg" style="margin-top: 8%"/>
-          <canvas id="canvas"></canvas>
+          <canvas spray-canvas></canvas>
         </div>
       </div>
       <div class="row row2">
