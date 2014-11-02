@@ -23,20 +23,28 @@
     </div>
 
     <div class="container-fluid ng-cloak" ng-show="loaded">
-      <div class="row row1">
-        <div id="content" class="col-xs-12">
-          <div class="sun">
-            <img class="img-responsive" alt="sun" src="img/sun.png"/>
+      <div class="col-xs-10">
+        <div class="row row1">
+          <div id="content" class="col-xs-12">
+            <div class="sun">
+              <img class="img-responsive" alt="sun" src="img/sun.png"/>
+            </div>
+            <canvas spray-canvas></canvas>
           </div>
-          <canvas spray-canvas></canvas>
         </div>
-      </div>
-      <div class="row row2">
-        <div id="control" class="col-xs-12">
-          <button type="button" class="btn btn-default pull-left" ng-click="color($event, '0')">Black</button>
-          <button type="button" class="btn btn-default pull-left" ng-click="color($event, '250')">White</button>
-          <button type="button" class="btn btn-default pull-right" ng-click="reset()">New</button>
-          <button type="button" class="btn btn-default pull-right" ng-click="save()">Save</button>
+        <div class="row row2">
+          <div id="control" class="col-xs-12">
+            <button type="button" class="btn btn-default pull-left" ng-click="color($event, '0')">Black</button>
+            <button type="button" class="btn btn-default pull-left" ng-click="color($event, '250')">White</button>
+            <button type="button" class="btn btn-default pull-right" ng-click="reset()">New</button>
+            <button type="button" class="btn btn-default pull-right" ng-click="save()">Save</button>
+          </div>
+        </div>      
+      </div>      
+      <div id="images" class="col-xs-2">
+        <div class="image row" ng-repeat="image in images">
+          <img class="img-responsive img-thumbnail img-rounded" ng-src="{{image.src}}" />
+          <div class="spacer">&nbsp;</div>
         </div>
       </div>      
     </div>

@@ -1,12 +1,22 @@
+/* TODO
+ * - only show relevant buttons
+ * - load image on click
+ * - on save, invert image, shutter sound
+ * 
+ * - get train, and artwork
+ */
+
+
 var app = angular.module("sprayit", []);
 
 app.controller("SprayController", function($scope, $timeout, spray) {
   $scope.images = spray.load();
-  
-  $scope.save = function(){
+
+  $scope.save = function() {
     spray.save($scope.images, $("canvas").get(0).toDataURL());
+    $scope.init();
   };
-  
+
   $timeout(function() {
     $scope.reset();
   });
@@ -87,9 +97,9 @@ app.directive("sprayCanvas", function($timeout) {
           var x = lastPoint.x + (Math.sin(angle) * i);
           var y = lastPoint.y + (Math.cos(angle) * i);
           var radgrad = context.createRadialGradient(x, y, size, x, y, size * 2);
-          radgrad.addColorStop(1, 'rgba('+color+','+color+','+color+',1)');
-          radgrad.addColorStop(0.5, 'rgba('+color+','+color+','+color+',0.5)');
-          radgrad.addColorStop(1, 'rgba('+color+','+color+','+color+',0)');
+          radgrad.addColorStop(1, 'rgba(' + color + ',' + color + ',' + color + ',1)');
+          radgrad.addColorStop(0.5, 'rgba(' + color + ',' + color + ',' + color + ',0.5)');
+          radgrad.addColorStop(1, 'rgba(' + color + ',' + color + ',' + color + ',0)');
           context.fillStyle = radgrad;
           context.fillRect(x - (size * 2), y - (size * 2), (size * 4), (size * 4));
         }
@@ -101,7 +111,7 @@ app.directive("sprayCanvas", function($timeout) {
 
       // Resize and redraw the canvas
       $scope.init = function() {
-        $scope.width = window.innerWidth - 30; // col-xs-12 width
+        $scope.width = window.innerWidth * 5 / 6; // col-xs-10 width
         $scope.height = window.innerHeight * 0.8; // row2 height
         context.canvas.width = $scope.width;
         context.canvas.height = $scope.height;
@@ -118,8 +128,9 @@ app.directive("sprayCanvas", function($timeout) {
           }
           context.drawImage(train, ($scope.width - width) / 2, ($scope.height - height) / 2, width, height);
           $timeout(function() {
-            $scope.loaded = true;
             $("#control > button:first").click();
+            isDrawing = false;
+            $scope.loaded = true;
           });
         };
         train.src = 'img/train.svg';
