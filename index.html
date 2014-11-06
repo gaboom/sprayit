@@ -16,38 +16,36 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body ng-controller="SprayController" spray-init>
-    <div class="fullscreen-loading" ng-hide="loaded">
-      <span class="helper"></span>
-      <img id="loading" class="img-responsive" alt="loading" src="img/shark.gif"/>
-    </div>
+  <body ng-controller="SprayController">
+    <div class="container-fluid ng-cloak">
+      <div class="row">
+        <div id="control" class="col-xs-2">
+          <span class="to-top">
+            <button type="button" class="center-block btn btn-default color" data-color="0,0,0" ng-click="rgb($event)">
+              <img src="img/black.png" class="center-block img-responsive" alt="Black" />
+            </button>
+            <button type="button" class="center-block btn btn-default color" data-color="250,250,250" ng-click="rgb($event)">
+              <img src="img/white.png" class="center-block img-responsive" alt="White" />
+            </button>
+          </span>
 
-    <div class="container-fluid ng-cloak" ng-show="loaded">
-      <div class="col-xs-10">
-        <div class="row row1">
-          <div id="content" class="col-xs-12">
-            <div class="sun">
-              <img class="img-responsive" alt="sun" src="img/sun.png"/>
-            </div>
-            <canvas spray-canvas></canvas>
-          </div>
+          <span class="to-bottom">
+            <button class="center-block btn btn-default image" ng-click="load($event)">
+              <img class="center-block img-responsive" src="img/train.jpg" alt="Train"/>
+            </button>
+            <button class="center-block btn btn-default image" ng-click="load($event)">
+              <img class="center-block img-responsive" src="img/wall.jpg" alt="Wall" />
+            </button>
+            <button class="center-block btn btn-default" ng-click="save()">
+              Save
+            </button>
+          </span>
         </div>
-        <div class="row row2">
-          <div id="control" class="col-xs-12">
-            <button type="button" class="btn btn-default pull-left" ng-click="color($event, '0')">Black</button>
-            <button type="button" class="btn btn-default pull-left" ng-click="color($event, '250')">White</button>
-            <button type="button" class="btn btn-default pull-right" ng-click="reset()">New</button>
-            <button type="button" class="btn btn-default pull-right" ng-click="save()">Save</button>
-          </div>
-        </div>      
-      </div>      
-      <div id="images" class="col-xs-2">
-        <div class="image row" ng-repeat="image in images">
-          <img class="img-responsive img-thumbnail img-rounded" ng-src="{{image.src}}" />
-          <div class="spacer">&nbsp;</div>
+        <div id="content" class="col-xs-10">
+          <canvas spray-canvas></canvas>
         </div>
-      </div>      
-    </div>
+      </div>
+    </div>      
 
     <script src="lib/jquery/jquery.min.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>

@@ -1,58 +1,47 @@
 /* TODO
  * - only show relevant buttons
- * - load image on click
+ * - save to file
  * - on save, invert image, shutter sound
- * 
- * - get train, and artwork
+ * - mobile tap events
+ * - portrait support
  */
 
 
 var app = angular.module("sprayit", []);
 
 app.controller("SprayController", function($scope, $timeout, spray) {
-  $scope.images = spray.load();
-
   $scope.save = function() {
-    spray.save($scope.images, $("canvas").get(0).toDataURL());
-    $scope.init();
+    spray.save($("canvas").get(0).toDataURL());
   };
 
-  $timeout(function() {
-    $scope.reset();
-  });
+  $scope.load = function($event) {
+    $('#control button.image').removeClass('active');
+    $($event.target).addClass('active');
+    $scope.src = $($event.target).attr("src");
+    $scope.redraw();
+  };
+
+  $scope.rgb = function($event) {
+    $('#control button.color').removeClass('active');
+    var $target = $($event.currentTarget).addClass('active');
+    $scope.color = $target.attr("data-color");
+  };
+
+  $scope.color = $('#control button.color:first').addClass('active').attr('data-color');
+  $scope.src = $('#control button.image:first > img').addClass('active').attr('src');
+
+  var redraw = function() {
+    $timeout(function() {
+      $scope.redraw();
+    });
+  };
+  $(window).resize(redraw);
+  redraw();
 });
 
 app.factory("spray", function() {
   return {
-    load: function() {
-      return [];
-    },
-    save: function(images, image) {
-      images.unshift({src: image});
-    }
-  };
-});
-
-app.directive("sprayInit", function($timeout) {
-  return {
-    scope: false,
-    restrict: 'A',
-    link: function($scope, element) {
-      var reset = null;
-      $scope.reset = function() {
-        if (reset) {
-          clearTimeout(reset);
-        } else {
-          $timeout(function() {
-            $scope.loaded = false;
-          });
-        }
-        reset = setTimeout(function() {
-          reset = null;
-          $scope.init();
-        }, 500);
-      };
-      $(window).resize($scope.reset);
+    save: function(image) {
     }
   };
 });
@@ -63,15 +52,6 @@ app.directive("sprayCanvas", function($timeout) {
     restrict: 'A',
     link: function($scope, element) {
       var context = element[0].getContext("2d");
-      var color;
-      $scope.color = function($event, setColor) {
-        if (setColor !== undefined) {
-          $('#control > button').removeClass('active');
-          $($event.currentTarget).addClass('active');
-          color = setColor;
-        }
-        return color;
-      };
 
       // Paint. Tribute: http://perfectionkills.com/exploring-canvas-drawing-techniques/
       function distanceBetween(point1, point2) {
@@ -83,23 +63,23 @@ app.directive("sprayCanvas", function($timeout) {
       var isDrawing, lastPoint, size = 2;
       context.canvas.onmousedown = function(e) {
         isDrawing = true;
-        lastPoint = {x: e.clientX, y: e.clientY};
+        lastPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
         context.lineJoin = context.lineCap = 'round';
       };
       context.canvas.onmousemove = function(e) {
         if (!isDrawing) {
           return;
         }
-        var currentPoint = {x: e.clientX, y: e.clientY};
+        var currentPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
         var dist = distanceBetween(lastPoint, currentPoint);
         var angle = angleBetween(lastPoint, currentPoint);
         for (var i = 0; i < dist; i += size) {
           var x = lastPoint.x + (Math.sin(angle) * i);
           var y = lastPoint.y + (Math.cos(angle) * i);
           var radgrad = context.createRadialGradient(x, y, size, x, y, size * 2);
-          radgrad.addColorStop(1, 'rgba(' + color + ',' + color + ',' + color + ',1)');
-          radgrad.addColorStop(0.5, 'rgba(' + color + ',' + color + ',' + color + ',0.5)');
-          radgrad.addColorStop(1, 'rgba(' + color + ',' + color + ',' + color + ',0)');
+          radgrad.addColorStop(1, 'rgba(' + $scope.color + ',1)');
+          radgrad.addColorStop(0.5, 'rgba(' + $scope.color + ',0.5)');
+          radgrad.addColorStop(1, 'rgba(' + $scope.color + ',0)');
           context.fillStyle = radgrad;
           context.fillRect(x - (size * 2), y - (size * 2), (size * 4), (size * 4));
         }
@@ -110,9 +90,10 @@ app.directive("sprayCanvas", function($timeout) {
       };
 
       // Resize and redraw the canvas
-      $scope.init = function() {
-        $scope.width = window.innerWidth * 5 / 6; // col-xs-10 width
-        $scope.height = window.innerHeight * 0.8; // row2 height
+      $scope.redraw = function() {
+        isDrawing = false;
+        $scope.width = window.innerWidth * 5 / 6 - 15; // col-xs-10 width
+        $scope.height = window.innerHeight * 1 - 0; // row height
         context.canvas.width = $scope.width;
         context.canvas.height = $scope.height;
         context.clearRect(0, 0, $scope.width, $scope.height);
@@ -127,13 +108,8 @@ app.directive("sprayCanvas", function($timeout) {
             height = $scope.height;
           }
           context.drawImage(train, ($scope.width - width) / 2, ($scope.height - height) / 2, width, height);
-          $timeout(function() {
-            $("#control > button:first").click();
-            isDrawing = false;
-            $scope.loaded = true;
-          });
         };
-        train.src = 'img/train.svg';
+        train.src = $scope.src;
       };
     }
   };

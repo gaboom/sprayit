@@ -1,86 +1,80 @@
 * {
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-   -ms-user-select: none;
-   user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 html, body {
   height: 100%;
   overflow: hidden;
-  min-width: 300px;
-  min-height: 256px;
-}
-
-div.fullscreen-loading {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  white-space: nowrap;
-}
-div.fullscreen-loading>span.helper {
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-img#loading {
-  display: inline-block;
-  margin-top: -2%;
-  vertical-align: middle;
 }
 
 div.container-fluid {
   height: 100%;
-  padding-left: 0;
-  padding-right: 0;
 }
 
-div.row1 {
-  height: 80%;
+.row {
+  height: 100%;
 }
-div#content {
-  padding-left: 0;
-  padding-right: 0;
+
+#control {
+  height: 100%;
 }
-div.sun {
+#control span {
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+#control span.to-top {
+  position: absolute;
+  top: 0;
+}
+#control span.to-bottom {
+  position: absolute;
+  bottom: 0;
+}
+#control button {
+  margin: 1% auto 1% auto;
+  padding: 0;
+}
+#control button {
+  width: 50%;
+}
+#control button img {
+}
+
+#content {
+  height: 100%;
+}
+#content canvas {
+  position: absolute;
   top: 0;
   left: 0;
-  position: absolute;
-  width: 10%;
-  height: 10%;
-}
-div.sun > img {
-  -ms-transform: translate(-20%, -20%);
-  -webkit-transform: translate(-20%, -20%);
-  transform: translate(-20%, -20%);
-}
-
-div.row2 {
-  height: 20%;
-}
-button {
-  margin: 0 1% 0 1%;
-}
-
-div#images {
-  height: 100%;
-  overflow-y: scroll;
-}
-div.row.image {
-  text-align: center; 
-}
-diw.row.image > img {
-  margin-left: auto;
-  margin-right: auto;
-}
-div.spacer {
-  line-height: 0.5em;
 }
 
 @media (min-width: 768px) { 
+  #control button {
+    margin: 5% auto 5% auto;
+  }
+  #control button {
+    width: 60%;
+  }
 }
 @media (min-width: 992px) {
+  #control button {
+    margin: 10% auto 10% auto;
+  }
+  #control button {
+    width: 70%;
+  }
 }
 @media (min-width: 1200px) { 
+  #control button {
+    margin: 15% auto 15% auto;
+  }
+  #control button {
+    width: 80%;
+  }
 }
