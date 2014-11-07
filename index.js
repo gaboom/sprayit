@@ -30,12 +30,19 @@ app.controller("SprayController", function($scope, $timeout, spray) {
   $scope.color = $('#control button.color:first').addClass('active').attr('data-color');
   $scope.src = $('#control button.image:first > img').addClass('active').attr('src');
 
+  var guard;
   var redraw = function() {
     $timeout(function() {
       $scope.redraw();
     });
   };
-  $(window).resize(redraw);
+  $(window).resize(function() {
+    if (guard) {
+      guard = clearTimeout(guard);
+    } else {
+      guard = setTimeout(redraw, 10);
+    }
+  });
   redraw();
 });
 
@@ -51,6 +58,7 @@ app.directive("sprayCanvas", function($timeout) {
     scope: false,
     restrict: 'A',
     link: function($scope, element) {
+      var $canvas = $(element[0]);
       var context = element[0].getContext("2d");
 
       // Paint. Tribute: http://perfectionkills.com/exploring-canvas-drawing-techniques/
@@ -92,22 +100,30 @@ app.directive("sprayCanvas", function($timeout) {
       // Resize and redraw the canvas
       $scope.redraw = function() {
         isDrawing = false;
-        $scope.width = window.innerWidth * 5 / 6 - 15; // col-xs-10 width
-        $scope.height = window.innerHeight * 1 - 0; // row height
-        context.canvas.width = $scope.width;
-        context.canvas.height = $scope.height;
-        context.clearRect(0, 0, $scope.width, $scope.height);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        var $centerSpan = $("#control > span");
 
         var train = new Image();
         train.onload = function() {
+          var maxWidth = window.innerWidth * 11 / 12; // col-xs-11 width
+          var maxHeight = window.innerHeight * 1 - 0; // row height
           var ratio = train.naturalHeight / train.naturalWidth;
-          var width = $scope.width;
-          var height = $scope.width * ratio;
-          if (height > $scope.height) {
-            width = $scope.height / ratio;
-            height = $scope.height;
+          var width = Math.min(train.naturalWidth, maxWidth);
+          var height = width * ratio;
+          if (height > maxHeight) {
+            height = maxHeight;
+            width = height / ratio;
           }
-          context.drawImage(train, ($scope.width - width) / 2, ($scope.height - height) / 2, width, height);
+          context.canvas.width = width;
+          context.canvas.height = height;
+          $canvas.css({
+            left: Math.floor((maxWidth - width) / 2),
+            top: (maxHeight - height) / 2
+          });
+          $centerSpan.css({
+            left: Math.floor((maxWidth -width) / 4)
+          });
+          context.drawImage(train, 0, 0, width, height);
         };
         train.src = $scope.src;
       };

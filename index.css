@@ -23,24 +23,33 @@ div.container-fluid {
   height: 100%;
 }
 #control span {
-  left: 0;
-  width: 100%;
+  position: relative;
+  width: 98%;
   text-align: center;
+  z-index: 1;
 }
 #control span.to-top {
   position: absolute;
   top: 0;
+}
+#control span.to-center {
+  display: table;
+  height: 100%
+}
+#control span.to-middle {
+  display: table-cell;
+  vertical-align: middle;
 }
 #control span.to-bottom {
   position: absolute;
   bottom: 0;
 }
 #control button {
-  margin: 1% auto 1% auto;
+  margin: 10% auto 10% auto;
   padding: 0;
 }
 #control button {
-  width: 50%;
+  width: 100%;
 }
 #control button img {
 }
@@ -50,31 +59,20 @@ div.container-fluid {
 }
 #content canvas {
   position: absolute;
-  top: 0;
-  left: 0;
 }
 
 @media (min-width: 768px) { 
   #control button {
-    margin: 5% auto 5% auto;
-  }
-  #control button {
-    width: 60%;
+    margin: 15% auto 15% auto;
   }
 }
 @media (min-width: 992px) {
   #control button {
-    margin: 10% auto 10% auto;
-  }
-  #control button {
-    width: 70%;
+    margin: 20% auto 20% auto;
   }
 }
 @media (min-width: 1200px) { 
   #control button {
-    margin: 15% auto 15% auto;
-  }
-  #control button {
-    width: 80%;
+    margin: 25% auto 15% auto;
   }
 }
