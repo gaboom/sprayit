@@ -7,9 +7,18 @@
  */
 
 
-var app = angular.module("sprayit", []);
+var app = angular.module("sprayit", []).config([
+  '$compileProvider',
+  function($compileProvider)
+  {
+    // Tribute: http://stackoverflow.com/questions/15606751/angular-changes-urls-to-unsafe-in-extension-page
+    $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|filesystem):/);
+  }
+]);
 
 app.controller("SprayController", function($scope, $timeout, spray) {
+  window.open("viewer.html");
+  
   $scope.void = true;
   $scope.save = function() {
     $scope.void = true;
@@ -58,10 +67,9 @@ app.factory("spray", function() {
   }
   function fsFail(e) {
     alert("We've got some trouble.");
-    console.log(e);
+    throw e;
   }
   function quotaOk() {
-    console.log(arguments);
     var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     requestFileSystem(window.PERSISTENT, QUOTA, fsOk, fsFail);
   }
@@ -191,7 +199,7 @@ app.directive("sprayCanvas", function($timeout) {
           context.canvas.width = width;
           context.canvas.height = height;
           $canvas.css({
-            left: Math.floor((maxWidth - width) / 2),
+            left: Math.ceil((maxWidth - width) / 2),
             top: (maxHeight - height) / 2
           });
           $centerSpan.css({
