@@ -1,8 +1,8 @@
 /* TODO
- * - save to file
- * - on save, invert image, shutter sound
  * - mobile tap events
  * - portrait support
+ * - install instructions
+ * - viewer
  */
 
 
@@ -11,8 +11,9 @@ var app = angular.module("sprayit", []);
 app.controller("SprayController", function($scope, $timeout, spray) {
   $scope.void = true;
   $scope.save = function() {
-    spray.save($("canvas").get(0).toDataURL());
     $scope.void = true;
+    var data = $("canvas").get(0).toDataURL("image/png");
+    spray.save(spray.dataURLToBlob(data));
   };
 
   $scope.load = function($event) {
@@ -33,23 +34,91 @@ app.controller("SprayController", function($scope, $timeout, spray) {
 
   var guard;
   var redraw = function() {
+    guard = null;
     $timeout(function() {
       $scope.redraw();
     });
   };
   $(window).resize(function() {
     if (guard) {
-      guard = clearTimeout(guard);
-    } else {
-      guard = setTimeout(redraw, 10);
+      clearTimeout(guard);
     }
+    guard = setTimeout(redraw, 10);
   });
   redraw();
 });
 
 app.factory("spray", function() {
+  var QUOTA = 10 * 1024 * 1024 * 1024; // 100 GB OK ?
+  var fs = null;
+
+  function fsOk(filesystem) {
+    fs = filesystem;
+  }
+  function fsFail(e) {
+    alert("We've got some trouble.");
+    console.log(e);
+  }
+  function quotaOk() {
+    console.log(arguments);
+    var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+    requestFileSystem(window.PERSISTENT, QUOTA, fsOk, fsFail);
+  }
+
+  if (navigator.webkitPersistentStorage) {
+    navigator.webkitPersistentStorage.requestQuota(QUOTA, quotaOk, fsFail);
+  } else {
+    if (window.webkitStorageInfo.requestQuota) {
+      window.webkitStorageInfo.requestQuota(window.PERSISTENT, QUOTA, quotaOk, fsFail);
+    }
+  }
+
   return {
     save: function(image) {
+      if (fs === null) {
+        alert("Save is possible with Chrome browser!\nPlease reload in Chrome\nand press OK on the top\nwhen asked for storage use!");
+        return;
+      }
+      var now = new Date();
+      fs.root.getFile(now.getFullYear() + '' + now.getMonth() + '' + now.getMonth() + '' + now.getDate()
+        + '-' + now.getHours() + '' + now.getMinutes() + '' + now.getSeconds() + '-' + now.getMilliseconds() + '.png',
+        {create: true, exclusive: true}, function(file) {
+        file.createWriter(function(writer) {
+          writer.onwriteend = function(e) {
+            setTimeout(function(){
+              $("canvas").css({"-webkit-filter": "", "filter": ""});
+            }, 500);
+          };
+          writer.onerror = fsFail;
+          document.getElementById("audio").play();
+          $("canvas").css({"-webkit-filter": "invert(100%)", "filter": "invert(100%)"});
+          writer.write(image);
+        }, fsFail);
+      }, fsFail);
+    },
+    dataURLToBlob: function(dataURL) {
+      // Tribute: http://stackoverflow.com/questions/12168909/blob-from-dataurl
+      var BASE64_MARKER = ';base64,';
+      if (dataURL.indexOf(BASE64_MARKER) === -1) {
+        var parts = dataURL.split(',');
+        var contentType = parts[0].split(':')[1];
+        var raw = decodeURIComponent(parts[1]);
+
+        return new Blob([raw], {type: contentType});
+      }
+
+      var parts = dataURL.split(BASE64_MARKER);
+      var contentType = parts[0].split(':')[1];
+      var raw = window.atob(parts[1]);
+      var rawLength = raw.length;
+
+      var uInt8Array = new Uint8Array(rawLength);
+
+      for (var i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+      }
+
+      return new Blob([uInt8Array], {type: contentType});
     }
   };
 });
@@ -62,7 +131,7 @@ app.directive("sprayCanvas", function($timeout) {
       var $canvas = $(element[0]);
       var context = element[0].getContext("2d");
 
-      // Paint. Tribute: http://perfectionkills.com/exploring-canvas-drawing-techniques/
+      // Tribute: http://perfectionkills.com/exploring-canvas-drawing-techniques/
       function distanceBetween(point1, point2) {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
       }
@@ -128,7 +197,9 @@ app.directive("sprayCanvas", function($timeout) {
             left: Math.floor((maxWidth - width) / 4)
           });
           context.drawImage(train, 0, 0, width, height);
-          $scope.void = true;
+          $timeout(function(){
+            $scope.void = true;
+          });
         };
         train.src = $scope.src;
       };
