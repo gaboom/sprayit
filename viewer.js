@@ -8,7 +8,7 @@ var app = angular.module("sprayit", []).config([
 ]);
 
 app.controller("SprayedController", function($scope, $timeout, $interval) {
-  var INTERVAL = 5000; // milliseconds
+  var INTERVAL = 10 * 1000; // milliseconds
 
   // Load all images
   var images = ["img/train.jpg", "img/wall.jpg"];
@@ -39,6 +39,10 @@ app.controller("SprayedController", function($scope, $timeout, $interval) {
   var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
   requestFileSystem(window.PERSISTENT, 0, fsOk, fsFail);
 
+  window.image = function() {
+    images.push(image);
+  };
+
   // Display random image
   function change() {
     $scope.src = random(images);
@@ -50,6 +54,7 @@ app.controller("SprayedController", function($scope, $timeout, $interval) {
 
 app.directive('imgResponsive', function($timeout) {
   return {
+    scope: false,
     restrict: 'A',
     link: function($scope, $element, $attrs) {
       var guard;
@@ -74,6 +79,10 @@ app.directive('imgResponsive', function($timeout) {
           top: (maxHeight / margin - height) / 2
         });
       };
+
+      $element.click(function(){
+        window.opener.$("#loader img").attr("src", $scope.src).click();
+      });
 
       $element.bind('load', redraw);
 

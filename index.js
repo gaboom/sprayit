@@ -1,7 +1,5 @@
 /* TODO
- * - viewer
  * - message new image
- * - load image
  * - mobile tap events
  * - install instructions
  */
@@ -15,10 +13,9 @@ var app = angular.module("sprayit", []).config([
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|filesystem):/);
   }
 ]);
+var viewer = window.open("viewer.html");
 
 app.controller("SprayController", function($scope, $timeout, spray) {
-  window.open("viewer.html");
-  
   $scope.void = true;
   $scope.save = function() {
     $scope.void = true;
@@ -94,13 +91,22 @@ app.factory("spray", function() {
         {create: true, exclusive: true}, function(file) {
         file.createWriter(function(writer) {
           writer.onwriteend = function(e) {
-            setTimeout(function(){
-              $("canvas").css({"-webkit-filter": "", "filter": ""});
+            setTimeout(function() {
+              var uninvert = {"-webkit-filter": "", "filter": ""};
+              $("canvas").css(uninvert);
+              if (viewer && viewer.$) {
+                viewer.$("#img").attr("src", file.toURL()).css(uninvert);
+                viewer.image(file.toURL());
+              }
             }, 500);
           };
           writer.onerror = fsFail;
           document.getElementById("audio").play();
-          $("canvas").css({"-webkit-filter": "invert(100%)", "filter": "invert(100%)"});
+          var invert = {"-webkit-filter": "invert(100%)", "filter": "invert(100%)"};
+          $("canvas").css(invert);
+          if (viewer && viewer.$) {
+            viewer.$("#img").css(invert);
+          }
           writer.write(image);
         }, fsFail);
       }, fsFail);
@@ -206,7 +212,7 @@ app.directive("sprayCanvas", function($timeout) {
             left: Math.floor((maxWidth - width) / 4)
           });
           context.drawImage(train, 0, 0, width, height);
-          $timeout(function(){
+          $timeout(function() {
             $scope.void = true;
           });
         };
