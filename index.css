@@ -61,6 +61,8 @@ div.container-fluid {
 
 #content {
   height: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 #content canvas {
   position: absolute;

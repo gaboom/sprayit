@@ -1,10 +1,3 @@
-/* TODO
- * - message new image
- * - mobile tap events
- * - install instructions
- */
-
-
 var app = angular.module("sprayit", []).config([
   '$compileProvider',
   function($compileProvider)
@@ -193,8 +186,12 @@ app.directive("sprayCanvas", function($timeout) {
 
         var train = new Image();
         train.onload = function() {
-          var maxWidth = window.innerWidth * 11 / 12; // col-xs-11 width
-          var maxHeight = window.innerHeight * 1 - 0; // row height
+          var maxWidth = window.innerWidth * (1 - 8.33333333 / 100); // col-xs-11 width
+          var controlWidth = $("#control").outerWidth();
+          if (controlWidth) {
+            maxWidth = Math.min(window.innerWidth - controlWidth, maxWidth);
+          }
+          var maxHeight = window.innerHeight * 1; // row height
           var ratio = train.naturalHeight / train.naturalWidth;
           var width = Math.min(train.naturalWidth, maxWidth);
           var height = width * ratio;
@@ -209,7 +206,7 @@ app.directive("sprayCanvas", function($timeout) {
             top: (maxHeight - height) / 2
           });
           $centerSpan.css({
-            left: Math.floor((maxWidth - width) / 4)
+            left: Math.ceil((maxWidth - width) / 4)
           });
           context.drawImage(train, 0, 0, width, height);
           $timeout(function() {
