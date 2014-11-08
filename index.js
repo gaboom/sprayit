@@ -1,8 +1,9 @@
 /* TODO
- * - mobile tap events
- * - portrait support
- * - install instructions
  * - viewer
+ * - message new image
+ * - load image
+ * - mobile tap events
+ * - install instructions
  */
 
 
