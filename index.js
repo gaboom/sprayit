@@ -1,5 +1,4 @@
 /* TODO
- * - only show relevant buttons
  * - save to file
  * - on save, invert image, shutter sound
  * - mobile tap events
@@ -10,8 +9,10 @@
 var app = angular.module("sprayit", []);
 
 app.controller("SprayController", function($scope, $timeout, spray) {
+  $scope.void = true;
   $scope.save = function() {
     spray.save($("canvas").get(0).toDataURL());
+    $scope.void = true;
   };
 
   $scope.load = function($event) {
@@ -70,6 +71,9 @@ app.directive("sprayCanvas", function($timeout) {
       }
       var isDrawing, lastPoint, size = 2;
       context.canvas.onmousedown = function(e) {
+        $timeout(function() {
+          $scope.void = false;
+        });
         isDrawing = true;
         lastPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
         context.lineJoin = context.lineCap = 'round';
@@ -121,9 +125,10 @@ app.directive("sprayCanvas", function($timeout) {
             top: (maxHeight - height) / 2
           });
           $centerSpan.css({
-            left: Math.floor((maxWidth -width) / 4)
+            left: Math.floor((maxWidth - width) / 4)
           });
           context.drawImage(train, 0, 0, width, height);
+          $scope.void = true;
         };
         train.src = $scope.src;
       };
