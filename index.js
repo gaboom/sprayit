@@ -34,12 +34,12 @@ app.controller("SprayController", function($scope, $timeout, spray) {
 
   var guard;
   var redraw = function() {
-    guard = null;
     $timeout(function() {
+      guard = null;
       $scope.redraw();
     });
   };
-  $(window).resize(function() {
+  window.addEventListener('resize', function() {
     if (guard) {
       clearTimeout(guard);
     }
@@ -67,7 +67,7 @@ app.factory("spray", function() {
   if (navigator.webkitPersistentStorage) {
     navigator.webkitPersistentStorage.requestQuota(QUOTA, quotaOk, fsFail);
   } else {
-    if (window.webkitStorageInfo.requestQuota) {
+    if (window.webkitStorageInfo) {
       window.webkitStorageInfo.requestQuota(window.PERSISTENT, QUOTA, quotaOk, fsFail);
     }
   }
@@ -153,7 +153,6 @@ app.directive("sprayCanvas", function($timeout) {
         });
         isDrawing = true;
         lastPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
-        context.lineJoin = context.lineCap = 'round';
       };
       context.canvas.onmousemove = function(e) {
         if (!isDrawing) {
@@ -169,6 +168,7 @@ app.directive("sprayCanvas", function($timeout) {
           radgrad.addColorStop(1, 'rgba(' + $scope.color + ',1)');
           radgrad.addColorStop(0.5, 'rgba(' + $scope.color + ',0.5)');
           radgrad.addColorStop(1, 'rgba(' + $scope.color + ',0)');
+          context.lineJoin = context.lineCap = 'round';
           context.fillStyle = radgrad;
           context.fillRect(x - (size * 2), y - (size * 2), (size * 4), (size * 4));
         }

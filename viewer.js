@@ -17,7 +17,7 @@ app.controller("SprayedController", function($scope, $timeout, $interval) {
   }
   function fsFail(e) {
     alert("We've got some trouble.");
-    console.log(e);
+    throw e;
   }
   function fsOk(fs) {
     var dirReader = fs.root.createReader();
@@ -37,7 +37,9 @@ app.controller("SprayedController", function($scope, $timeout, $interval) {
     readEntries();
   }
   var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-  requestFileSystem(window.PERSISTENT, 0, fsOk, fsFail);
+  if (requestFileSystem) {
+    requestFileSystem(window.PERSISTENT, 0, fsOk, fsFail);
+  }
 
   window.image = function() {
     images.push(image);
