@@ -6,7 +6,7 @@ var app = angular.module("sprayit", []).config([
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|filesystem):/);
   }
 ]);
-var viewer = window.open("viewer.html");
+var viewer;
 
 app.controller("SprayController", function($scope, $timeout, spray) {
   $scope.void = true;
@@ -53,6 +53,7 @@ app.factory("spray", function() {
   var fs = null;
 
   function fsOk(filesystem) {
+    viewer = window.open("viewer.html");
     fs = filesystem;
   }
   function fsFail(e) {
@@ -163,11 +164,11 @@ app.directive("sprayCanvas", function($timeout) {
         var currentPoint = {x: e.x - offset.left, y: e.y - offset.top};
         var dist = distanceBetween(lastPoint, currentPoint);
         var angle = angleBetween(lastPoint, currentPoint);
-        for (var i = 0; i < dist; i += size) {
+        for (var i = 0; i < dist; i += size * 1.5) {
           var x = lastPoint.x + (Math.sin(angle) * i);
           var y = lastPoint.y + (Math.cos(angle) * i);
-          var radgrad = context.createRadialGradient(x, y, size, x, y, size * 2);
-          radgrad.addColorStop(1, 'rgba(' + $scope.color + ',1)');
+          var radgrad = context.createRadialGradient(x, y, size / 2, x, y, size * 2);
+          radgrad.addColorStop(0, 'rgba(' + $scope.color + ',1)');
           radgrad.addColorStop(0.5, 'rgba(' + $scope.color + ',0.5)');
           radgrad.addColorStop(1, 'rgba(' + $scope.color + ',0)');
           context.lineJoin = context.lineCap = 'round';
