@@ -22,6 +22,8 @@ div.container-fluid {
 }
 
 #control {
+  padding-left: 0;
+  padding-right: 0;
   height: 100%;
   z-index: 1;
 }
