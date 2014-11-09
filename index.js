@@ -147,18 +147,20 @@ app.directive("sprayCanvas", function($timeout) {
         return Math.atan2(point2.x - point1.x, point2.y - point1.y);
       }
       var isDrawing, lastPoint, size = 2;
-      context.canvas.onmousedown = function(e) {
+      element[0].addEventListener("pointerdown", function(e) {
         $timeout(function() {
           $scope.void = false;
         });
         isDrawing = true;
-        lastPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
-      };
-      context.canvas.onmousemove = function(e) {
+        var offset = $canvas.offset();
+        lastPoint = {x: e.x - offset.left, y: e.y - offset.top};
+      });
+      element[0].addEventListener("pointermove", function(e) {
         if (!isDrawing) {
           return;
         }
-        var currentPoint = {x: e.offsetX === undefined ? e.layerX : e.offsetX, y: e.offsetY === undefined ? e.layerY : e.offsetY};
+        var offset = $canvas.offset();
+        var currentPoint = {x: e.x - offset.left, y: e.y - offset.top};
         var dist = distanceBetween(lastPoint, currentPoint);
         var angle = angleBetween(lastPoint, currentPoint);
         for (var i = 0; i < dist; i += size) {
@@ -173,10 +175,12 @@ app.directive("sprayCanvas", function($timeout) {
           context.fillRect(x - (size * 2), y - (size * 2), (size * 4), (size * 4));
         }
         lastPoint = currentPoint;
-      };
-      context.canvas.onmouseup = function() {
+      });
+      var finish = function() {
         isDrawing = false;
       };
+      element[0].addEventListener("pointerup", finish);
+      element[0].addEventListener("pointerleave", finish);
 
       // Resize and redraw the canvas
       $scope.redraw = function() {

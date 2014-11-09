@@ -68,7 +68,6 @@ div.container-fluid {
 #content canvas {
   position: absolute;
   cursor: pointer;
-  -webkit-touch-callout: none;
 }
 
 @media (min-width: 768px) { 
