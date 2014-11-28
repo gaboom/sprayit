@@ -9,18 +9,11 @@ var app = angular.module("sprayit", []).config([
 var viewer;
 
 app.controller("SprayController", function($scope, $timeout, spray) {
-  $scope.void = true;
+  $scope.sprayed = false;
   $scope.save = function() {
-    $scope.void = true;
+    $scope.sprayed = false;
     var data = $("canvas").get(0).toDataURL("image/png");
     spray.save(spray.dataURLToBlob(data));
-  };
-
-  $scope.load = function($event) {
-    $('#control button.image').removeClass('active');
-    $($event.target).addClass('active');
-    $scope.src = $($event.target).attr("src");
-    $scope.redraw();
   };
 
   $scope.rgb = function($event) {
@@ -29,8 +22,8 @@ app.controller("SprayController", function($scope, $timeout, spray) {
     $scope.color = $target.attr("data-color");
   };
 
-  $scope.color = $('#control button.color:first').addClass('active').attr('data-color');
-  $scope.src = $('#control button.image:first > img').addClass('active').attr('src');
+  $scope.color = $('button.color:last').addClass('active').attr('data-color');
+  $scope.src = $('#content > img').attr('src');
 
   var guard;
   var redraw = function() {
@@ -53,7 +46,7 @@ app.factory("spray", function() {
   var fs = null;
 
   function fsOk(filesystem) {
-    viewer = window.open("viewer.html");
+    //viewer = window.open("viewer.html");
     fs = filesystem;
   }
   function fsFail(e) {
@@ -150,7 +143,7 @@ app.directive("sprayCanvas", function($timeout) {
       var isDrawing, lastPoint, size = 2;
       element[0].addEventListener("pointerdown", function(e) {
         $timeout(function() {
-          $scope.void = false;
+          $scope.sprayed = true;
         });
         isDrawing = true;
         var offset = $canvas.offset();
@@ -187,16 +180,11 @@ app.directive("sprayCanvas", function($timeout) {
       $scope.redraw = function() {
         isDrawing = false;
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        var $centerSpan = $("#control > span");
 
         var train = new Image();
         train.onload = function() {
-          var maxWidth = window.innerWidth * (1 - 8.33333333 / 100); // col-xs-11 width
-          var controlWidth = $("#control").outerWidth();
-          if (controlWidth) {
-            maxWidth = Math.min(window.innerWidth - controlWidth, maxWidth);
-          }
-          var maxHeight = window.innerHeight * 1; // row height
+          var maxWidth = window.innerWidth;
+          var maxHeight = window.innerHeight;
           var ratio = train.naturalHeight / train.naturalWidth;
           var width = Math.min(train.naturalWidth, maxWidth);
           var height = width * ratio;
@@ -210,12 +198,9 @@ app.directive("sprayCanvas", function($timeout) {
             left: Math.ceil((maxWidth - width) / 2),
             top: (maxHeight - height) / 2
           });
-          $centerSpan.css({
-            left: Math.ceil((maxWidth - width) / 4)
-          });
           context.drawImage(train, 0, 0, width, height);
           $timeout(function() {
-            $scope.void = true;
+            $scope.sprayed = false;
           });
         };
         train.src = $scope.src;

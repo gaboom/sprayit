@@ -16,51 +16,27 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body ng-controller="SprayController">
-    <div class="container-fluid ng-cloak">
-      <div class="row">
-        <div id="control" class="col-xs-1">
-          <span class="to-top">
-            <button type="button" class="center-block btn btn-default color" data-color="0,0,0" ng-click="rgb($event)">
-              <img src="img/black.png" class="center-block img-responsive" alt="Black" />
-            </button>
-            <button type="button" class="center-block btn btn-default color" data-color="250,250,250" ng-click="rgb($event)">
-              <img src="img/white.png" class="center-block img-responsive" alt="White" />
-            </button>
-          </span>
+  <body ng-controller="SprayController" ng-cloak>
+    <div id="content">
+      <img class="ng-hide" src="img/train.jpg" alt="Train"/>
+      <canvas spray-canvas width="0" height="0"></canvas>
+    </div>
 
-          <span class="to-center" ng-hide="void">
-            <span class="to-middle">
-              <button class="center-block btn btn-default" ng-click="save()">
-                <img src="img/photo.png" class="center-block img-responsive" alt="Take a shot" />
-              </button>
-              <audio id="audio">
-                <source src="audio/shutter.mp3"/>
-              </audio>
-            </span>
-          </span>
-
-          <span class="to-bottom">
-            <button class="center-block btn btn-default image" ng-click="load($event)">
-              <img class="center-block img-responsive" src="img/train.jpg" alt="Train"/>
-            </button>
-            <button class="center-block btn btn-default image" ng-click="load($event)">
-              <img class="center-block img-responsive" src="img/wall.jpg" alt="Wall" />
-            </button>
-            <button id="loader" class="hidden" ng-click="load($event)">
-              <img class="" src="img/wall.jpg" alt="Loader" />
-            </button>
-          </span>
-        </div>
-        <div id="content" class="col-xs-10">
-          <canvas spray-canvas width="0" height="0"></canvas>
-        </div>
-      </div>
-    </div>      
+    <button type="button" class="center-block btn btn-default color" data-color="250,250,250" ng-click="rgb($event)">
+      <img src="img/white.png" class="center-block img-responsive" alt="White" />
+    </button>
+    <button type="button" class="center-block btn btn-default color" data-color="0,0,0" ng-click="rgb($event)">
+      <img src="img/black.png" class="center-block img-responsive" alt="Black" />
+    </button>
+    <button class="center-block btn btn-default" ng-show="sprayed" ng-click="save()">
+      <img src="img/photo.png" class="center-block img-responsive" alt="Take a shot" />
+      <audio id="audio">
+        <source src="audio/shutter.mp3"/>
+      </audio>
+    </button>
 
     <script src="lib/pointer.min.js"></script>
     <script src="lib/jquery/jquery.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="index.js"></script>
   </body>
