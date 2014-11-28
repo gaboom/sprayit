@@ -53,8 +53,8 @@ app.factory("spray", function($timeout) {
     fs = filesystem;
   }
   function fsFail(e) {
-    alert("We've got some trouble.");
-    throw e;
+    console.log(e);
+    throw new Error(e);
   }
   function quotaOk() {
     var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;

@@ -16,8 +16,8 @@ app.controller("SprayedController", function($scope, $timeout, $interval) {
     return array[Math.floor(Math.random() * array.length)];
   }
   function fsFail(e) {
-    alert("We've got some trouble.");
-    throw e;
+    console.log(e);
+    throw new Error(e);
   }
   function fsOk(fs) {
     var dirReader = fs.root.createReader();
