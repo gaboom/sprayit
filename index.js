@@ -9,11 +9,14 @@ var app = angular.module("sprayit", []).config([
 var viewer;
 
 app.controller("SprayController", function($scope, $timeout, spray) {
+  $scope.underground = false;
   $scope.sprayed = false;
   $scope.save = function() {
     $scope.sprayed = false;
     var data = $("canvas").get(0).toDataURL("image/png");
-    spray.save(spray.dataURLToBlob(data));
+    spray.save(spray.dataURLToBlob(data), function() {
+      $scope.redraw();
+    });
   };
 
   $scope.rgb = function($event) {
@@ -41,12 +44,12 @@ app.controller("SprayController", function($scope, $timeout, spray) {
   redraw();
 });
 
-app.factory("spray", function() {
+app.factory("spray", function($timeout) {
   var QUOTA = 10 * 1024 * 1024 * 1024; // 100 GB OK ?
   var fs = null;
 
   function fsOk(filesystem) {
-    //viewer = window.open("viewer.html");
+    viewer = window.open("viewer.html");
     fs = filesystem;
   }
   function fsFail(e) {
@@ -67,7 +70,7 @@ app.factory("spray", function() {
   }
 
   return {
-    save: function(image) {
+    save: function(image, done) {
       if (fs === null) {
         alert("Save is possible with Chrome browser!\nPlease reload in Chrome\nand press OK on the top\nwhen asked for storage use!");
         return;
@@ -81,6 +84,7 @@ app.factory("spray", function() {
             setTimeout(function() {
               var uninvert = {"-webkit-filter": "", "filter": ""};
               $("canvas").css(uninvert);
+              $timeout(done);
               if (viewer && viewer.$) {
                 viewer.$("#img").attr("src", file.toURL()).css(uninvert);
                 viewer.image(file.toURL());
@@ -179,10 +183,13 @@ app.directive("sprayCanvas", function($timeout) {
       // Resize and redraw the canvas
       $scope.redraw = function() {
         isDrawing = false;
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
+        $timeout(function() {
+          $scope.sprayed = false;
+          $scope.underground = false;
+        });
         var train = new Image();
         train.onload = function() {
+          context.clearRect(0, 0, context.canvas.width, context.canvas.height);
           var maxWidth = window.innerWidth;
           var maxHeight = window.innerHeight;
           var ratio = train.naturalHeight / train.naturalWidth;
@@ -199,9 +206,6 @@ app.directive("sprayCanvas", function($timeout) {
             top: (maxHeight - height) / 2
           });
           context.drawImage(train, 0, 0, width, height);
-          $timeout(function() {
-            $scope.sprayed = false;
-          });
         };
         train.src = $scope.src;
       };

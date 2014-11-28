@@ -17,7 +17,8 @@
     <![endif]-->
   </head>
   <body ng-controller="SprayController" ng-cloak>
-    <div id="content">
+    <img id="wall" src="img/wall.jpg" alt="Train" ng-hide="underground" ng-click="underground=true"/>
+    <div id="content" ng-show="underground">
       <img class="ng-hide" src="img/train.jpg" alt="Train"/>
       <canvas spray-canvas width="0" height="0"></canvas>
     </div>
