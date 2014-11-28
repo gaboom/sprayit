@@ -144,7 +144,7 @@ app.directive("sprayCanvas", function($timeout) {
       function angleBetween(point1, point2) {
         return Math.atan2(point2.x - point1.x, point2.y - point1.y);
       }
-      var isDrawing, lastPoint, size = 2;
+      var isDrawing, lastPoint, size = 4;
       element[0].addEventListener("pointerdown", function(e) {
         $timeout(function() {
           $scope.sprayed = true;
@@ -193,7 +193,7 @@ app.directive("sprayCanvas", function($timeout) {
           var maxWidth = window.innerWidth;
           var maxHeight = window.innerHeight;
           var ratio = train.naturalHeight / train.naturalWidth;
-          var width = Math.min(train.naturalWidth, maxWidth);
+          var width = maxWidth;
           var height = width * ratio;
           if (height > maxHeight) {
             height = maxHeight;

@@ -23,13 +23,13 @@
       <canvas spray-canvas width="0" height="0"></canvas>
     </div>
 
-    <button type="button" class="center-block btn btn-default color" data-color="250,250,250" ng-click="rgb($event)">
+    <button type="button" ng-show="underground" class="center-block btn btn-default color" data-color="250,250,250" ng-click="rgb($event)">
       <img src="img/white.png" class="center-block img-responsive" alt="White" />
     </button>
-    <button type="button" class="center-block btn btn-default color" data-color="0,0,0" ng-click="rgb($event)">
+    <button type="button" ng-show="underground" class="center-block btn btn-default color" data-color="0,0,0" ng-click="rgb($event)">
       <img src="img/black.png" class="center-block img-responsive" alt="Black" />
     </button>
-    <button class="center-block btn btn-default" ng-show="sprayed" ng-click="save()">
+    <button class="center-block btn btn-default" ng-show="sprayed && underground" ng-click="save()">
       <img src="img/photo.png" class="center-block img-responsive" alt="Take a shot" />
       <audio id="audio">
         <source src="audio/shutter.mp3"/>
